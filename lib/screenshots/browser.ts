@@ -10,7 +10,7 @@ const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTI
 
 /**
  * Get or create browser instance
- * For Vercel: Install Chrome via buildCommand in vercel.json
+ * Uses Playwright's bundled Chromium
  */
 export async function getBrowser(): Promise<Browser> {
   if (!browserInstance || !browserInstance.isConnected()) {
@@ -28,14 +28,9 @@ export async function getBrowser(): Promise<Browser> {
         ],
       };
 
-      // On Vercel, use system Chrome if available
+      // On Vercel/serverless, add single-process mode
       if (isServerless) {
         launchOptions.args.push('--single-process');
-        // Vercel will have Chrome at this path after install
-        const vercelChromePath = '/usr/bin/google-chrome-stable';
-        if (require('fs').existsSync(vercelChromePath)) {
-          launchOptions.executablePath = vercelChromePath;
-        }
       }
 
       browserInstance = await chromium.launch(launchOptions);

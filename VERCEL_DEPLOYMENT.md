@@ -40,25 +40,27 @@ vercel
 
 ### Playwright on Vercel
 
-The app uses **`playwright-core`** instead of full `playwright`:
+The app uses **`playwright-core`** for browser automation:
 
-- ✅ **Smaller package size** - No bundled browsers
-- ✅ **Vercel-compatible** - Uses system Chrome via build command
-- ✅ **Auto-installs** - `vercel.json` runs `playwright install chromium`
+- ✅ **Lightweight** - No bundled browsers in the package
+- ✅ **Build-time installation** - Chromium installed during Vercel build
+- ✅ **Serverless-optimized** - Uses minimal resources
 
 ### Build Process
 
+The build command in vercel.json installs Chromium without system dependencies:
+
 ```json
 {
-  "buildCommand": "npx playwright install --with-deps chromium && npm run build"
+  "buildCommand": "npx playwright install chromium && npm run build"
 }
 ```
 
-This installs Chromium with all system dependencies during the Vercel build.
+This installs just the Chromium browser binary (not system deps) during the Vercel build.
 
 ### Runtime Behavior
 
-- **Development**: Uses locally installed Chromium
+- **Development**: Uses locally installed Chromium (run `npx playwright install chromium`)
 - **Vercel Production**: Uses Chromium installed during build
 - **Serverless Optimized**: Single-process mode, no GPU, minimal memory
 

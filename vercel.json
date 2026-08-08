@@ -4,6 +4,5 @@
       "maxDuration": 60
     }
   },
-  "buildCommand": "npx playwright install --with-deps chromium && npm run build",
-  "installCommand": "npm install"
+  "buildCommand": "npx playwright install chromium && npm run build"
 }
