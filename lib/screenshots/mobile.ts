@@ -1,4 +1,4 @@
-import { BrowserContext, Page } from 'playwright';
+import { BrowserContext, Page } from 'playwright-core';
 import { getBrowser, navigateToUrl, waitForPageReady, getMaxScreenshotHeight } from './browser';
 import { validateSSRF } from '../security/ssrf';
 

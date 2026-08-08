@@ -1,6 +1,6 @@
 # SEO Auditor
 
-A comprehensive website auditing MVP built with Next.js and TypeScript. Analyzes websites across 8 critical categories and provides actionable recommendations with professional SEOptimer-style UI.
+A comprehensive website auditing SaaS MVP built with Next.js and TypeScript. Analyzes websites across 8 critical categories and provides actionable recommendations with professional SEOptimer-style UI.
 
 ## Features
 
@@ -33,7 +33,7 @@ A comprehensive website auditing MVP built with Next.js and TypeScript. Analyzes
 
 - **Next.js 14.2.5** - App Router, TypeScript, Server Components
 - **Tailwind CSS** - Custom navy color scheme, responsive design
-- **Playwright** - Chromium browser automation for screenshots
+- **Playwright Core + @sparticuz/chromium** - Serverless-optimized browser automation
 - **Cheerio** - Fast HTML parsing and DOM manipulation
 - **Recharts** - Interactive radar charts
 - **Lucide React** - Modern icon system
@@ -63,12 +63,12 @@ Copy `.env.example` to `.env.local` and adjust as needed.
 
 ### Routes
 
-- `app/page.tsx` - Landing page and audit form.
-- `app/audit/[id]/page.tsx` - Audit report page.
-- `app/api/audit/route.ts` - Audit API entry point.
-- `app/api/audit/[id]/route.ts` - Fetch a stored audit result.
-- `app/robots.ts` - Robots metadata.
-- `app/sitemap.ts` - Sitemap metadata.
+- `app/page.tsx` - Landing page and audit form
+- `app/audit/[id]/page.tsx` - Audit report page
+- `app/api/audit/route.ts` - Audit API entry point
+- `app/api/audit/[id]/route.ts` - Fetch a stored audit result
+- `app/robots.ts` - Robots metadata
+- `app/sitemap.ts` - Sitemap metadata
 
 ### Audit Engine
 
@@ -94,7 +94,7 @@ Playwright captures two real screenshots per audit:
 - **Desktop:** `1440 x 900` viewport (Chromium browser)
 - **Mobile:** `390 x 844` viewport (iPhone 12 Pro user agent)
 
-Screenshots are full-page captures with a safety cap on page height to avoid runaway resource usage. The storage layer currently writes locally to `public/screenshots/` with PNG format, but the code is structured so it can be swapped to Vercel Blob, AWS S3, or Cloudflare R2 later.
+Screenshots are full-page captures with a safety cap on page height to avoid runaway resource usage. Uses `@sparticuz/chromium` for serverless environments (Vercel/Lambda) and falls back to local Chromium for development.
 
 ### UI Components
 
@@ -111,18 +111,18 @@ Screenshots are full-page captures with a safety cap on page height to avoid run
 The backend includes SSRF protection that blocks:
 
 - `localhost`
-- private IP ranges
-- loopback addresses
-- c URL is validated before fetch and revalidated after redirects. The crawler also applies request timeouts and size limits.
+- Private IP ranges
+- Loopback addresses
+- Cloud metadata endpoints
+- Non-HTTP schemes
+
+The URL is validated before fetch and revalidated after redirects. The crawler also applies request timeouts and size limits.
 
 ## Rate Limiting
 
 The MVP uses a simple in-memory rate limiter. It is intentionally easy to replace with Upstash Redis, Redis, or Cloudflare rate limiting in production.
 
-## loud metadata endpoints
-- non-HTTP schemes
-
-TheScoring Details
+## Scoring Details
 
 ### Grade Thresholds
 - **A+** - 95-100 (Excellent)
@@ -146,12 +146,43 @@ Final overall score is calculated as weighted average:
 - SEO: 25%
 - Performance: 20%
 - Usability: 15%
-- ADeployment Notes
+- Accessibility: 10%
+- Technical: 10%
+- Best Practices: 10%
+- Mobile: 5%
+- Links: 5%
 
-- Vercel works well for the landing page and API routes
-- Playwright screenshot generation can be sensitive in serverless environments
-- For production scale, a dedicated worker for screenshot jobs is recommended
-- Railway or Render are good options when you want a long-lived Node process for browser work
+## Deployment
+
+### Vercel (Recommended)
+
+1. Push your code to GitHub
+2. Import the project in Vercel
+3. The app will automatically detect Next.js and use optimal settings
+4. Screenshots work out-of-the-box using `@sparticuz/chromium`
+
+**Important Notes:**
+- The `vercel.json` configures the audit API route with 60-second timeout
+- Playwright browser is automatically optimized for serverless
+- For heavy traffic, consider using a dedicated screenshot service
+
+### Alternative Platforms
+
+**Railway / Render:**
+- Better for long-running Node processes
+- No serverless limitations
+- Install Playwright browsers: `npx playwright install chromium`
+
+**Docker:**
+```dockerfile
+FROM mcr.microsoft.com/playwright:v1.45.3-jammy
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+CMD ["npm", "start"]
+```
 
 ## Future SaaS Enhancements
 
@@ -169,19 +200,19 @@ The project is intentionally structured for easy expansion:
 - **Usage Limits** - Rate limiting per user/tier
 - **Stripe Subscriptions** - Payment integration
 - **Background Workers** - Queue system for heavy tasks
-- **Database** - Persistent storage for audit history
+- **Database** - Persistent storage (PostgreSQL, MongoDB, etc.)
+- **Cloud Storage** - Vercel Blob, AWS S3, or Cloudflare R2 for screenshots
 
 ## MVP Notes
 
 - No login required
 - No payment flow implemented
 - No database required
-- In-memory storage for audits (lost on server restart)
+- In-memory storage for audits (cleared on server restart)
 - Simple rate limiting (in-memory, not distributed)
 - If a signal cannot be measured reliably, the UI shows `Not available` rather than inventing a value
-## Notes
+- Screenshots gracefully degrade if browser launch fails
 
-- No login is required.
-- No payment flow is implemented.
-- No database is required for the MVP.
-- If a signal cannot be measured reliably, the UI should show `Not available` rather than inventing a value.
+## License
+
+MIT

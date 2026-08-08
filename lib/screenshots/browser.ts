@@ -1,27 +1,48 @@
-import { chromium, Browser, Page } from 'playwright';
+import { chromium, Browser, Page } from 'playwright-core';
 
 let browserInstance: Browser | null = null;
 
 const MAX_SCREENSHOT_HEIGHT = parseInt(process.env.PLAYWRIGHT_MAX_SCREENSHOT_HEIGHT || '10000', 10);
 const NAVIGATION_TIMEOUT = parseInt(process.env.PLAYWRIGHT_TIMEOUT || '30000', 10);
 
+// Detect if we're in a serverless environment (Vercel, AWS Lambda, etc.)
+const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+
 /**
  * Get or create browser instance
+ * For Vercel: Install Chrome via buildCommand in vercel.json
  */
 export async function getBrowser(): Promise<Browser> {
   if (!browserInstance || !browserInstance.isConnected()) {
-    browserInstance = await chromium.launch({
-      headless: true,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--no-first-run',
-        '--no-zygote',
-        '--disable-gpu',
-      ],
-    });
+    try {
+      const launchOptions: any = {
+        headless: true,
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-accelerated-2d-canvas',
+          '--no-first-run',
+          '--no-zygote',
+          '--disable-gpu',
+        ],
+      };
+
+      // On Vercel, use system Chrome if available
+      if (isServerless) {
+        launchOptions.args.push('--single-process');
+        // Vercel will have Chrome at this path after install
+        const vercelChromePath = '/usr/bin/google-chrome-stable';
+        if (require('fs').existsSync(vercelChromePath)) {
+          launchOptions.executablePath = vercelChromePath;
+        }
+      }
+
+      browserInstance = await chromium.launch(launchOptions);
+    } catch (error) {
+      console.error('Failed to launch browser:', error);
+      throw new Error('Browser initialization failed. Screenshots are unavailable.');
+    }
   }
   return browserInstance;
 }
