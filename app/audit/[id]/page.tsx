@@ -163,8 +163,8 @@ export default function AuditResultPage({ params }: { params: { id: string } }) 
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-navy-900 mb-2">Audit Results</h1>
           <p className="text-navy-600">
-            This report grades your website based on the strength of various SEO factors such as On Page Optimization, 
-            Technical SEO, Performance, and more. The overall Grade is on a A+ to F- scale.
+            This report grades your website based on key SEO factors, including On-Page Optimization, Technical SEO, Performance, and more. Get a clear <b>A+ to F- grade</b> that highlights your website’s strengths, weaknesses, and opportunities for improvement.
+
           </p>
         </div>
 

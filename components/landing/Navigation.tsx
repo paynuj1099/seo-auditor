@@ -27,9 +27,9 @@ export default function Navigation() {
             <a href="#how-it-works" className="text-navy-600 hover:text-navy-900 transition-colors">
               How It Works
             </a>
-            <a href="#what-we-check" className="text-navy-600 hover:text-navy-900 transition-colors">
+            {/* <a href="#what-we-check" className="text-navy-600 hover:text-navy-900 transition-colors">
               What We Check
-            </a>
+            </a> */}
             <a href="#faq" className="text-navy-600 hover:text-navy-900 transition-colors">
               FAQ
             </a>
