@@ -83,10 +83,7 @@ The audit pipeline lives in `lib/audit/` and is split into focused modules:
 - **`scoring.ts`** - Deduction-based scoring model with weighted categories and realistic grade thresholds
 - **`recommendations.ts`** - Converts failed/warning checks into prioritized recommendations with problem/impact/solution details
 
-### Screenshot System
-
-Playwright captures two real screenshots per audit:
-Live Preview System
+### Live Preview System
 
 Website previews are rendered using iframes in device mockups:
 
@@ -96,12 +93,16 @@ Website previews are rendered using iframes in device mockups:
 - **No dependencies:** Works without browser automation or external services
 
 **Note:** Some websites may block iframe embedding via X-Frame-Options or CSP headers. In these cases, the audit data is still available and users can click "Visit Site" to view the website directly
+
+### UI Components
+
+### UI Components
+
 - **`ScoreCircle.tsx`** - Reusable circular score display with letter grades
 - **`CategoryScoreCard.tsx`** - Individual category scores with circular progress
 - **`RadarChart.tsx`** - Pentagon visualization using Recharts
 - **`ChecksTable.tsx`** - Expandable accordion for detailed check results with status icons
 - **`RecommendationsList.tsx`** - Expandable accordion for actionable recommendations with problem/impact/solution
-- **`ScreenshotPreview.tsx`** - Loading states, error handling, image optimization
 - **`PageDetails.tsx`** - URL, HTML size, load time, resource counts
 
 ## Security
@@ -157,30 +158,19 @@ Final overall score is calculated as weighted average:
 1. Push your code to GitHub
 2. Import the project in Vercel
 3. The app will automatically detect Next.js and use optimal settings
-4. Screenshots work out-of-the-box using `@sparticuz/chromium`
+4. No special configuration needed - standard Next.js build
 
 **Important Notes:**
 - The `vercel.json` configures the audit API route with 60-second timeout
-- Playwright browser is automatically optimized for serverless
-- For heavy traffic, consider using a dedicated screenshot service
+- Live previews work out-of-the-box with iframes
+- For heavy traffic, consider adding database for audit history
 
 ### Alternative Platforms
 
 **Railway / Render:**
-- Better for long-running Node processes
-- No serverless limitations
-- Install Playwright browsers: `npx playwright install chromium`
-
-**Docker:**
-```dockerfile
-FROM mcr.microsoft.com/playwright:v1.45.3-jammy
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
-CMD ["npm", "start"]
-```
+- Works with standard Node.js deployment
+- No special dependencies needed
+- Configure environment variables as needed
 
 ## Future SaaS Enhancements
 

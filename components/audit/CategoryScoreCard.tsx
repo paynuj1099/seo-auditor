@@ -30,17 +30,17 @@ export default function CategoryScoreCard({ title, score, icon }: CategoryScoreC
   const strokeDashoffset = circumference - (score / 100) * circumference;
 
   return (
-    <div className="bg-white rounded-xl p-4 shadow-md border border-navy-100 hover:shadow-lg transition-shadow">
+    <div className="bg-white rounded-lg p-3 shadow-md border border-navy-100 hover:shadow-lg transition-shadow">
       <div className="flex flex-col items-center">
         {/* Circular Progress */}
-        <div className="relative w-20 h-20 mb-2">
+        <div className="relative w-14 h-14 mb-1.5">
           <svg className="transform -rotate-90 w-full h-full">
             <circle
               cx="50%"
               cy="50%"
               r="35%"
               stroke="currentColor"
-              strokeWidth="6"
+              strokeWidth="5"
               fill="none"
               className="text-navy-100"
             />
@@ -49,7 +49,7 @@ export default function CategoryScoreCard({ title, score, icon }: CategoryScoreC
               cy="50%"
               r="35%"
               stroke={color}
-              strokeWidth="6"
+              strokeWidth="5"
               fill="none"
               strokeDasharray={circumference}
               strokeDashoffset={strokeDashoffset}
@@ -58,14 +58,14 @@ export default function CategoryScoreCard({ title, score, icon }: CategoryScoreC
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-xl font-bold" style={{ color }}>
+            <span className="text-lg font-bold" style={{ color }}>
               {letterGrade}
             </span>
           </div>
         </div>
 
         {/* Title */}
-        <h3 className="text-xs font-semibold text-navy-900 text-center">{title}</h3>
+        <h3 className="text-[10px] font-semibold text-navy-900 text-center leading-tight">{title}</h3>
       </div>
     </div>
   );

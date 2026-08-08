@@ -1,6 +1,6 @@
 'use client';
 
-import { Radar, RadarChart as RechartsRadar, PolarGrid, PolarAngleAxis, ResponsiveContainer } from 'recharts';
+import { Radar, RadarChart as RechartsRadar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 import { AuditScores } from '@/types/audit';
 
 interface RadarChartProps {
@@ -37,12 +37,17 @@ export default function RadarChart({ scores }: RadarChartProps) {
   ];
 
   return (
-    <ResponsiveContainer width="100%" height={250}>
+    <ResponsiveContainer width="100%" height={300}>
       <RechartsRadar data={data}>
         <PolarGrid stroke="#e2e8f0" />
         <PolarAngleAxis 
           dataKey="category" 
-          tick={{ fill: '#475569', fontSize: 11 }}
+          tick={{ fill: '#475569', fontSize: 12 }}
+        />
+        <PolarRadiusAxis 
+          angle={90} 
+          domain={[0, 100]}
+          tick={{ fill: '#94a3b8', fontSize: 10 }}
         />
         <Radar
           name="Score"

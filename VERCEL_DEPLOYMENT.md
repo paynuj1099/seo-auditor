@@ -102,51 +102,43 @@ NEXT_PUBLIC_APP_URL=https://your-domain.vercel.app
 ### Deployment fails
 
 **Cause**: Build or configuration error
-2. Verify `playwright install` ran successfully
-3. Increase function timeout (Pro plan required)
-4. Check error logs in Vercel Function Logs
-
-### Screenshots timeout
-
-**Cause**: Website takes >60 seconds to load
 
 **Solutions**:
-1. Reduce `PLAYWRIGHT_TIMEOUT` to fail faster
-2. Make screenshots optional (already handled in UI)
-3. Use webhook/background job for long audits
+1. Check build logs in Vercel Dashboard
+2. Verify all dependencies are in package.json
+3. Test build locally: `npm run build`
+4. Check environment variables are set
+
+### Audits timing out
+
+**Cause**: Large website takes >60 seconds to crawl
+
+**Solutions**:
+1. Increase function timeout (Pro plan required)
+2. Optimize crawling depth and limits
+3. Use webhook/background job for large audits
 
 ### Out of memory
 
-**Cause**: Too many concurrent browser instances
+**Cause**: Too many concurrent audits or large HTML parsing
 
 **Solutions**:
 1. Add rate limiting (already implemented)
-2. Use dedicated worker service for screenshots
+2. Optimize HTML parsing and limit response sizes
 3. Upgrade Vercel plan for more memory
 
 ## Performance Optimization
 
-### Cold Starts
-- First request after idle: 3-5 seconds
-- Subsequent requests: <1 second
-- Chromium stays warm between requests
+### Response Times
+- First request: 1-3 seconds
+- Subsequent requests: <1 second  
+- No cold start overhead from browser automation
 
 ### Speed Tips
 1. **Enable caching**: Add `Cache-Control` headers to API routes
-2. **Optimize screenshots**: Reduce viewport sizes if needed
-3. **Lazy load**: Make screenshots optional or async
-4. **CDN**: Use Vercel's Edge Network for static assets
-
-## Alternative Deployments
-
-### Railway / Render
-
-If screenshots are critical and you need more control:
-
-```bash
-# Install full Playwright
-npm install playwright
-npx playwright install chromium --with-deps
+2. **Optimize crawling**: Adjust limits for faster response
+3. **CDN**: Use Vercel's Edge Network for static assets
+4. **Database**: Cache audit results for repeat URLs
 
 # Deploy to Railway
 railway up

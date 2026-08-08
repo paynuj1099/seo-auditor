@@ -262,7 +262,7 @@ export default function AuditResultPage({ params }: { params: { id: string } }) 
           {/* Category Scores with Radar Chart */}
           <div className="flex flex-col lg:flex-row gap-6 items-center justify-center">
             {/* Left: 5 Category Circles in single row */}
-            <div className="flex flex-wrap justify-center gap-4">
+            <div className="flex flex-nowrap justify-center gap-2">
               <CategoryScoreCard
                 title="On-Page SEO"
                 score={audit.scores.seo}
@@ -291,8 +291,8 @@ export default function AuditResultPage({ params }: { params: { id: string } }) 
             </div>
             
             {/* Right: Radar Chart */}
-            <div className="flex items-center justify-center lg:min-w-[300px]">
-              <div className="w-full max-w-sm">
+            <div className="flex items-center justify-center">
+              <div className="w-full max-w-xs">
                 <RadarChart scores={audit.scores} />
               </div>
             </div>
