@@ -2,6 +2,9 @@
 
 A comprehensive website auditing MVP built with Next.js and TypeScript. Analyzes websites across 8 critical categories and provides actionable recommendations with professional SEOptimer-style UI.
 
+<img width="1440" height="900" alt="seo_auditor" src="https://github.com/user-attachments/assets/24bfaf08-2bbf-44d2-b31e-f7359a0f8a0b" />
+
+
 ## Features
 
 ### 8 Audit Categories
