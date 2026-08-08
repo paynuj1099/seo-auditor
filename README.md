@@ -1,6 +1,6 @@
 # SEO Auditor
 
-A comprehensive website auditing SaaS MVP built with Next.js and TypeScript. Analyzes websites across 8 critical categories and provides actionable recommendations with professional SEOptimer-style UI.
+A comprehensive website auditing MVP built with Next.js and TypeScript. Analyzes websites across 8 critical categories and provides actionable recommendations with professional SEOptimer-style UI.
 
 ## Features
 
