@@ -37,17 +37,17 @@ export default function RadarChart({ scores }: RadarChartProps) {
   ];
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <RechartsRadar data={data}>
+    <ResponsiveContainer width="100%" height="100%">
+      <RechartsRadar data={data} margin={{ top: 20, right: 30, bottom: 20, left: 30 }}>
         <PolarGrid stroke="#e2e8f0" />
         <PolarAngleAxis 
           dataKey="category" 
-          tick={{ fill: '#475569', fontSize: 12 }}
+          tick={{ fill: '#475569', fontSize: 10 }}
         />
         <PolarRadiusAxis 
           angle={90} 
           domain={[0, 100]}
-          tick={{ fill: '#94a3b8', fontSize: 10 }}
+          tick={false}
         />
         <Radar
           name="Score"

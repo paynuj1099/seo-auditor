@@ -169,7 +169,7 @@ export default function AuditResultPage({ params }: { params: { id: string } }) 
         </div>
 
         {/* Overall Score & Category Scores Section */}
-        <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
+        <div className="bg-white rounded-xl shadow-lg p-8 mb-8 overflow-hidden">
           {/* Top Section: Score + Device Mockups */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
             {/* Left: Overall Score */}
@@ -260,9 +260,9 @@ export default function AuditResultPage({ params }: { params: { id: string } }) 
           </div>
 
           {/* Category Scores with Radar Chart */}
-          <div className="flex flex-col lg:flex-row gap-6 items-center justify-center">
+          <div className="flex flex-col lg:flex-row gap-4 items-center justify-center overflow-x-auto">
             {/* Left: 5 Category Circles in single row */}
-            <div className="flex flex-nowrap justify-center gap-2">
+            <div className="flex flex-wrap lg:flex-nowrap justify-center gap-4 flex-shrink-0">
               <CategoryScoreCard
                 title="On-Page SEO"
                 score={audit.scores.seo}
@@ -291,8 +291,8 @@ export default function AuditResultPage({ params }: { params: { id: string } }) 
             </div>
             
             {/* Right: Radar Chart */}
-            <div className="flex items-center justify-center">
-              <div className="w-full max-w-xs">
+            <div className="flex items-center justify-center flex-shrink-0">
+              <div className="w-[350px] h-[200px]">
                 <RadarChart scores={audit.scores} />
               </div>
             </div>
