@@ -11,6 +11,20 @@ interface ChecksTableProps {
 export default function ChecksTable({ checks }: ChecksTableProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
+  const getCategoryLabel = (category: string) => {
+    const labels: Record<string, string> = {
+      seo: 'On-Page SEO',
+      performance: 'Performance',
+      accessibility: 'On-Page SEO',      // Merged into SEO
+      technical: 'Technical',
+      mobile: 'Usability',               // Merged into Usability
+      usability: 'Usability',
+      links: 'Links',
+      bestPractices: 'Technical',        // Merged into Technical
+    };
+    return labels[category] || category;
+  };
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'passed':
@@ -166,7 +180,7 @@ export default function ChecksTable({ checks }: ChecksTableProps) {
 
                   {/* Category */}
                   <div className="text-xs text-navy-500 border-t border-navy-200 pt-3">
-                    Category: <span className="font-medium text-navy-700">{check.category}</span>
+                    Category: <span className="font-medium text-navy-700">{getCategoryLabel(check.category)}</span>
                   </div>
                 </div>
               </div>

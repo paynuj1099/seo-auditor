@@ -28,12 +28,12 @@ export default function RecommendationsList({ recommendations }: Recommendations
     const labels: Record<string, string> = {
       seo: 'On-Page SEO',
       performance: 'Performance',
-      accessibility: 'Accessibility',
+      accessibility: 'On-Page SEO',      // Merged into SEO
       technical: 'Technical',
-      mobile: 'Mobile',
+      mobile: 'Usability',               // Merged into Usability
       usability: 'Usability',
       links: 'Links',
-      bestPractices: 'Best Practices',
+      bestPractices: 'Technical',        // Merged into Technical
     };
     return labels[category] || category;
   };
