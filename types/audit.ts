@@ -69,13 +69,10 @@ export interface ScreenshotResult {
 
 export interface AuditScores {
   overall: number;
-  seo: number;
+  seo: number;          // Includes accessibility checks
   performance: number;
-  accessibility: number;
-  technical: number;
-  bestPractices: number;
-  mobile: number;
-  usability: number;
+  technical: number;    // Includes best practices
+  usability: number;    // Includes mobile checks
   links: number;
 }
 

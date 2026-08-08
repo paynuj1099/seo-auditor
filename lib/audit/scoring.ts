@@ -38,35 +38,36 @@ export function calculateScores(checks: AuditCheck[]): AuditScores {
     return acc;
   }, {} as Record<AuditCategory, AuditCheck[]>);
 
-  // Calculate category scores
-  const seo = calculateCategoryScore(checksByCategory.seo || []);
+  // Calculate category scores - merging related categories
+  // SEO includes accessibility (alt text, ARIA, etc.)
+  const seoChecks = [...(checksByCategory.seo || []), ...(checksByCategory.accessibility || [])];
+  const seo = calculateCategoryScore(seoChecks);
+  
   const performance = calculateCategoryScore(checksByCategory.performance || []);
-  const accessibility = calculateCategoryScore(checksByCategory.accessibility || []);
-  const technical = calculateCategoryScore(checksByCategory.technical || []);
-  const bestPractices = calculateCategoryScore(checksByCategory.bestPractices || []);
-  const mobile = calculateCategoryScore(checksByCategory.mobile || []);
-  const usability = calculateCategoryScore(checksByCategory.usability || []);
+  
+  // Technical includes best practices (security, modern HTML)
+  const technicalChecks = [...(checksByCategory.technical || []), ...(checksByCategory.bestPractices || [])];
+  const technical = calculateCategoryScore(technicalChecks);
+  
+  // Usability includes mobile experience
+  const usabilityChecks = [...(checksByCategory.usability || []), ...(checksByCategory.mobile || [])];
+  const usability = calculateCategoryScore(usabilityChecks);
+  
   const links = calculateCategoryScore(checksByCategory.links || []);
 
-  // Calculate weighted overall score
+  // Calculate weighted overall score with updated weights
   const weights = {
-    seo: 0.25,
+    seo: 0.35,        // 25% + 10% (accessibility)
     performance: 0.20,
-    accessibility: 0.10,
-    technical: 0.10,
-    bestPractices: 0.10,
-    mobile: 0.05,
-    usability: 0.15,
+    technical: 0.20,  // 10% + 10% (best practices)
+    usability: 0.20,  // 15% + 5% (mobile)
     links: 0.05,
   };
 
   const overall = Math.round(
     seo * weights.seo +
     performance * weights.performance +
-    accessibility * weights.accessibility +
     technical * weights.technical +
-    bestPractices * weights.bestPractices +
-    mobile * weights.mobile +
     usability * weights.usability +
     links * weights.links
   );
@@ -75,10 +76,7 @@ export function calculateScores(checks: AuditCheck[]): AuditScores {
     overall,
     seo,
     performance,
-    accessibility,
     technical,
-    bestPractices,
-    mobile,
     usability,
     links,
   };
