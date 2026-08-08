@@ -194,68 +194,68 @@ export default function AuditResultPage({ params }: { params: { id: string } }) 
 
             {/* Right: Device Mockups */}
             <div className="flex items-center justify-center">
-              {(audit.screenshots?.desktop || audit.screenshots?.mobile) ? (
-                <div className="relative w-full max-w-2xl">
-                  {/* Desktop Preview (background) */}
-                  {audit.screenshots.desktop && (
-                    <div className="relative z-0">
-                      <div className="bg-white rounded-lg shadow-2xl border border-navy-200 overflow-hidden">
-                        {/* Browser Chrome */}
-                        <div className="bg-gray-200 px-3 py-1.5 flex items-center gap-2 border-b border-gray-300">
-                          <div className="flex gap-1">
-                            <div className="w-2 h-2 rounded-full bg-red-500"></div>
-                            <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
-                            <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                          </div>
-                          <div className="flex-1 bg-white rounded px-2 py-0.5 text-xs text-navy-600 truncate ml-1">
-                            {audit.url}
-                          </div>
-                        </div>
-                        {/* Screen */}
-                        <div className="bg-white overflow-hidden">
-                          <img
-                            src={audit.screenshots.desktop}
-                            alt={`Desktop screenshot`}
-                            className="w-full h-auto max-h-80 object-cover object-top"
-                            onError={(e) => {
-                              e.currentTarget.src = '';
-                              e.currentTarget.style.display = 'none';
-                            }}
-                          />
-                        </div>
+              <div className="relative w-full max-w-2xl">
+                {/* Desktop Preview (background) */}
+                <div className="relative z-0">
+                  <div className="bg-white rounded-lg shadow-2xl border border-navy-200 overflow-hidden">
+                    {/* Browser Chrome */}
+                    <div className="bg-gray-200 px-3 py-1.5 flex items-center gap-2 border-b border-gray-300">
+                      <div className="flex gap-1">
+                        <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                        <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
+                        <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                      </div>
+                      <div className="flex-1 bg-white rounded px-2 py-0.5 text-xs text-navy-600 truncate ml-1">
+                        {audit.url}
                       </div>
                     </div>
-                  )}
-                  
-                  {/* Mobile Preview (foreground, overlapping) */}
-                  {audit.screenshots.mobile && (
-                    <div className="absolute bottom-0 right-0 z-10 transform translate-x-4 translate-y-4">
-                      <div className="relative w-32 h-64 bg-gray-900 rounded-3xl p-1.5 shadow-2xl">
-                        {/* Notch */}
-                        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-3 bg-gray-900 rounded-b-xl z-10"></div>
-                        {/* Screen */}
-                        <div className="w-full h-full bg-white rounded-[1.25rem] overflow-hidden relative">
-                          <img
-                            src={audit.screenshots.mobile}
-                            alt={`Mobile screenshot`}
-                            className="w-full h-full object-cover object-top"
-                            onError={(e) => {
-                              e.currentTarget.src = '';
-                              e.currentTarget.style.display = 'none';
-                            }}
-                          />
-                        </div>
-                        {/* Home indicator */}
-                        <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-12 h-0.5 bg-gray-300 rounded-full"></div>
-                      </div>
+                    {/* Screen with Live Preview */}
+                    <div className="bg-white overflow-hidden relative" style={{ height: '320px' }}>
+                      <iframe
+                        src={audit.url}
+                        className="w-full h-full border-0"
+                        style={{ 
+                          transform: 'scale(0.25)',
+                          transformOrigin: 'top left',
+                          width: '400%',
+                          height: '400%',
+                          pointerEvents: 'none'
+                        }}
+                        title={`Live preview of ${audit.url}`}
+                        sandbox="allow-same-origin allow-scripts"
+                      />
                     </div>
-                  )}
+                  </div>
                 </div>
-              ) : (
-                <div className="text-center text-navy-500 py-12">
-                  <p>Website preview will appear here</p>
+                
+                {/* Mobile Preview (foreground, overlapping) */}
+                <div className="absolute bottom-0 right-0 z-10 transform translate-x-4 translate-y-4">
+                  <div className="relative w-32 h-64 bg-gray-900 rounded-3xl p-1.5 shadow-2xl">
+                    {/* Notch */}
+                    <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-3 bg-gray-900 rounded-b-xl z-10"></div>
+                    {/* Screen with Live Preview */}
+                    <div className="w-full h-full bg-white rounded-[1.25rem] overflow-hidden relative">
+                      <iframe
+                        src={audit.url}
+                        className="border-0"
+                        scrolling="no"
+                        style={{ 
+                          transform: 'scale(0.22)',
+                          transformOrigin: 'top left',
+                          width: '455%',
+                          height: '455%',
+                          pointerEvents: 'none',
+                          overflow: 'hidden'
+                        }}
+                        title={`Mobile preview of ${audit.url}`}
+                        sandbox="allow-same-origin allow-scripts"
+                      />
+                    </div>
+                    {/* Home indicator */}
+                    <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-12 h-0.5 bg-gray-300 rounded-full"></div>
+                  </div>
                 </div>
-              )}
+              </div>
             </div>
           </div>
 
@@ -298,26 +298,6 @@ export default function AuditResultPage({ params }: { params: { id: string } }) 
             </div>
           </div>
         </div>
-
-        {/* Screenshot Errors (if any) */}
-        {(audit.screenshots?.desktopError || audit.screenshots?.mobileError) && (
-          <div className="mb-8 space-y-2">
-            {audit.screenshots.desktopError && (
-              <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <p className="text-sm text-yellow-800">
-                  <strong>Desktop screenshot unavailable:</strong> {audit.screenshots.desktopError}
-                </p>
-              </div>
-            )}
-            {audit.screenshots.mobileError && (
-              <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <p className="text-sm text-yellow-800">
-                  <strong>Mobile screenshot unavailable:</strong> {audit.screenshots.mobileError}
-                </p>
-              </div>
-            )}
-          </div>
-        )}
 
         {/* Recommendations */}
         {audit.recommendations.length > 0 && (

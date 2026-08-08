@@ -3,6 +3,5 @@
     "app/api/audit/route.ts": {
       "maxDuration": 60
     }
-  },
-  "buildCommand": "npx playwright install chromium && npm run build"
+  }
 }

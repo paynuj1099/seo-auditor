@@ -9,11 +9,7 @@ interface ScreenshotPreviewProps {
 }
 
 export default function ScreenshotPreview({ url, type, websiteUrl }: ScreenshotPreviewProps) {
-  const [imageError, setImageError] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
-
-  // Debug logging
-  console.log(`[ScreenshotPreview] ${type} screenshot URL:`, url);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
 
   if (type === 'mobile') {
     return (
@@ -25,24 +21,24 @@ export default function ScreenshotPreview({ url, type, websiteUrl }: ScreenshotP
           <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-gray-900 rounded-b-2xl z-10"></div>
           {/* Screen */}
           <div className="w-full h-full bg-white rounded-[2.5rem] overflow-hidden relative">
-            {!imageLoaded && !imageError && (
+            {!iframeLoaded && (
               <div className="absolute inset-0 flex items-center justify-center bg-navy-50">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
               </div>
             )}
-            {imageError ? (
-              <div className="absolute inset-0 flex items-center justify-center bg-navy-50 p-4">
-                <p className="text-xs text-center text-navy-600">Screenshot unavailable</p>
-              </div>
-            ) : (
-              <img
-                src={url}
-                alt={`Mobile screenshot of ${websiteUrl}`}
-                className="w-full h-full object-cover object-top"
-                onLoad={() => setImageLoaded(true)}
-                onError={() => setImageError(true)}
-              />
-            )}
+            <iframe
+              src={websiteUrl}
+              className="w-full h-full border-0"
+              style={{ 
+                transform: 'scale(0.5)',
+                transformOrigin: 'top left',
+                width: '200%',
+                height: '200%'
+              }}
+              title={`Mobile preview of ${websiteUrl}`}
+              onLoad={() => setIframeLoaded(true)}
+              sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+            />
           </div>
           {/* Home indicator */}
           <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gray-300 rounded-full"></div>
@@ -69,25 +65,19 @@ export default function ScreenshotPreview({ url, type, websiteUrl }: ScreenshotP
         </div>
         {/* Screen */}
         <div className="bg-white overflow-hidden relative" style={{ minHeight: '500px' }}>
-          {!imageLoaded && !imageError && (
-            <div className="absolute inset-0 flex items-center justify-center bg-navy-50 h-64">
+          {!iframeLoaded && (
+            <div className="absolute inset-0 flex items-center justify-center bg-navy-50">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
             </div>
           )}
-          {imageError ? (
-            <div className="flex items-center justify-center bg-navy-50 h-64 p-4">
-              <p className="text-sm text-center text-navy-600">Screenshot unavailable</p>
-            </div>
-          ) : (
-            <img
-              src={url}
-              alt={`Desktop screenshot of ${websiteUrl}`}
-              className="w-full h-auto"
-              style={{ minHeight: '500px', objectFit: 'cover', objectPosition: 'top' }}
-              onLoad={() => setImageLoaded(true)}
-              onError={() => setImageError(true)}
-            />
-          )}
+          <iframe
+            src={websiteUrl}
+            className="w-full border-0"
+            style={{ minHeight: '500px' }}
+            title={`Desktop preview of ${websiteUrl}`}
+            onLoad={() => setIframeLoaded(true)}
+            sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+          />
         </div>
       </div>
     </div>

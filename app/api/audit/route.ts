@@ -4,9 +4,6 @@ import { validateUrl } from '@/lib/security/url-validation';
 import { validateSSRF } from '@/lib/security/ssrf';
 import { checkRateLimit, getRateLimitHeaders } from '@/lib/security/rate-limit';
 import { runAudit } from '@/lib/audit';
-import { captureDesktopScreenshotSafe } from '@/lib/screenshots/desktop';
-import { captureMobileScreenshotSafe } from '@/lib/screenshots/mobile';
-import { saveScreenshots } from '@/lib/screenshots/storage';
 import { storeAudit } from '@/lib/storage/audit-store';
 
 // Request validation schema
@@ -104,36 +101,6 @@ export async function POST(request: Request) {
         }
       );
     }
-
-    // Capture screenshots in parallel (don't fail the audit if screenshots fail)
-    console.log('[Audit API] Starting screenshot capture for:', normalizedUrl);
-    const [desktopResult, mobileResult] = await Promise.all([
-      captureDesktopScreenshotSafe(normalizedUrl),
-      captureMobileScreenshotSafe(normalizedUrl),
-    ]);
-
-    console.log('[Audit API] Desktop screenshot:', desktopResult.success ? 'Success' : desktopResult.error);
-    console.log('[Audit API] Mobile screenshot:', mobileResult.success ? 'Success' : mobileResult.error);
-
-    // Save screenshots
-    const screenshots = await saveScreenshots(
-      auditResult.id,
-      desktopResult.success ? desktopResult.data : undefined,
-      mobileResult.success ? mobileResult.data : undefined
-    );
-
-    console.log('[Audit API] Screenshots saved:', screenshots);
-
-    // Add error messages if screenshots failed
-    if (!desktopResult.success) {
-      screenshots.desktopError = desktopResult.error;
-    }
-    if (!mobileResult.success) {
-      screenshots.mobileError = mobileResult.error;
-    }
-
-    // Update audit result with screenshots
-    auditResult.screenshots = screenshots;
 
     // Store audit result for later retrieval
     storeAudit(auditResult);

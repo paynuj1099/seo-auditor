@@ -18,7 +18,7 @@ A comprehensive website auditing MVP built with Next.js and TypeScript. Analyzes
 - **Letter Grades** - A+ to F grading system with realistic score thresholds
 - **Radar Chart** - Pentagon visualization of 5 main categories
 - **Category Cards** - Circular progress indicators for all 8 categories
-- **Device Mockups** - Browser and iPhone frames with real screenshots
+- **Live Previews** - Desktop and mobile device mockups with live iframe embeds
 - **Expandable Details** - Click to view detailed check information and how-to-fix instructions
 - **Priority Badges** - High/Medium/Low priority recommendations with color coding
 - **Smooth Scroll** - Clickable recommendations that scroll to details
@@ -33,7 +33,6 @@ A comprehensive website auditing MVP built with Next.js and TypeScript. Analyzes
 
 - **Next.js 14.2.5** - App Router, TypeScript, Server Components
 - **Tailwind CSS** - Custom navy color scheme, responsive design
-- **Playwright Core + @sparticuz/chromium** - Serverless-optimized browser automation
 - **Cheerio** - Fast HTML parsing and DOM manipulation
 - **Recharts** - Interactive radar charts
 - **Lucide React** - Modern icon system
@@ -56,9 +55,6 @@ Copy `.env.example` to `.env.local` and adjust as needed.
 - `RATE_LIMIT_MAX_REQUESTS` - Simple in-memory rate limit threshold
 - `RATE_LIMIT_WINDOW_MS` - Rate limit window in milliseconds
 - `SCREENSHOT_STORAGE_PATH` - Local screenshot output path
-- `PLAYWRIGHT_TIMEOUT` - Browser navigation timeout
-- `PLAYWRIGHT_MAX_SCREENSHOT_HEIGHT` - Safety cap for full-page screenshots
-
 ## Architecture
 
 ### Routes
@@ -90,14 +86,16 @@ The audit pipeline lives in `lib/audit/` and is split into focused modules:
 ### Screenshot System
 
 Playwright captures two real screenshots per audit:
+Live Preview System
 
-- **Desktop:** `1440 x 900` viewport (Chromium browser)
-- **Mobile:** `390 x 844` viewport (iPhone 12 Pro user agent)
+Website previews are rendered using iframes in device mockups:
 
-Screenshots are full-page captures with a safety cap on page height to avoid runaway resource usage. Uses `@sparticuz/chromium` for serverless environments (Vercel/Lambda) and falls back to local Chromium for development.
+- **Desktop:** Full-width browser mockup with live iframe embed
+- **Mobile:** iPhone mockup with scaled iframe for mobile simulation
+- **Instant:** No screenshot capture needed - shows real-time site state
+- **No dependencies:** Works without browser automation or external services
 
-### UI Components
-
+**Note:** Some websites may block iframe embedding via X-Frame-Options or CSP headers. In these cases, the audit data is still available and users can click "Visit Site" to view the website directly
 - **`ScoreCircle.tsx`** - Reusable circular score display with letter grades
 - **`CategoryScoreCard.tsx`** - Individual category scores with circular progress
 - **`RadarChart.tsx`** - Pentagon visualization using Recharts

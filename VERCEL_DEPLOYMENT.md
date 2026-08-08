@@ -20,13 +20,12 @@
 3. **Configure (Optional):**
    - Framework Preset: Next.js (auto-detected)
    - Root Directory: ./
-   - Build Command: (uses vercel.json)
+   - Build Command: (default)
    - Output Directory: (auto-detected)
 
 4. **Deploy:**
    - Click "Deploy"
-   - Vercel will install Chromium during build (via vercel.json)
-   - First deploy takes 2-3 minutes
+   - First deploy takes 1-2 minutes
 
 ### Method 2: Vercel CLI
 
@@ -38,39 +37,35 @@ vercel
 
 ## How It Works
 
-### Playwright on Vercel
+### Live Website Previews
 
-The app uses **`playwright-core`** for browser automation:
+The app uses **iframe embeds** to show live website previews:
 
-- ✅ **Lightweight** - No bundled browsers in the package
-- ✅ **Build-time installation** - Chromium installed during Vercel build
-- ✅ **Serverless-optimized** - Uses minimal resources
+- ✅ **No browser automation** - No Playwright/Chromium dependencies
+- ✅ **Instant previews** - Shows the actual live website
+- ✅ **Zero setup** - Works out of the box on Vercel
+- ✅ **No storage needed** - No screenshot files to manage
+- ✅ **Always current** - Shows real-time website state
 
 ### Build Process
 
-The build command in vercel.json installs Chromium without system dependencies:
+Standard Next.js build - no special configuration needed:
 
-```json
-{
-  "buildCommand": "npx playwright install chromium && npm run build"
-}
+```bash
+npm install && npm run build
 ```
-
-This installs just the Chromium browser binary (not system deps) during the Vercel build.
 
 ### Runtime Behavior
 
-- **Development**: Uses locally installed Chromium (run `npx playwright install chromium`)
-- **Vercel Production**: Uses Chromium installed during build
-- **Serverless Optimized**: Single-process mode, no GPU, minimal memory
+- **Desktop & Mobile previews**: Rendered via iframes in device mockups
+- **Serverless-optimized**: Minimal resource usage
+- **Fast audits**: No waiting for screenshot capture
 
 ## Environment Variables
 
 Set these in Vercel Dashboard (Settings → Environment Variables):
 
 ```env
-PLAYWRIGHT_TIMEOUT=30000
-PLAYWRIGHT_MAX_SCREENSHOT_HEIGHT=10000
 RATE_LIMIT_MAX_REQUESTS=10
 RATE_LIMIT_WINDOW_MS=60000
 NEXT_PUBLIC_APP_URL=https://your-domain.vercel.app
@@ -79,28 +74,34 @@ NEXT_PUBLIC_APP_URL=https://your-domain.vercel.app
 ## Important Notes
 
 ### Function Timeout
-- Free tier: 10 seconds (screenshots may fail)
+- Free tier: 10 seconds
 - Pro tier: 60 seconds (configured in vercel.json)
-- **Recommended**: Upgrade to Pro for reliable screenshots
+- Audits typically complete in 5-15 seconds
 
 ### Memory Limits
-- Chromium uses ~200-300MB per audit
-- Vercel serverless functions have 1GB memory limit
-- Concurrent audits are limited by this
+- Audits use minimal memory (~50-100MB)
+- No browser automation overhead
+- Concurrent audits scale well
 
-### Screenshot Storage
-- Currently uses `/public/screenshots/` (ephemeral on Vercel)
-- **For production**: Migrate to Vercel Blob, AWS S3, or Cloudflare R2
-- Screenshots are lost on redeployment
+### Preview Storage
+- Live iframes show real-time website state
+- No storage needed for screenshots
+- No cleanup required
 
 ## Troubleshooting
 
-### "Browser initialization failed"
+### "Website preview not loading"
 
-**Cause**: Chromium not installed or timeout during launch
+**Cause**: Target website blocks iframe embedding (X-Frame-Options or CSP headers)
 
 **Solutions**:
-1. Check build logs in Vercel dashboard
+- This is a limitation of the target website's security policy
+- The audit data and recommendations still work perfectly
+- Users can click "Visit Site" to view the website directly
+
+### Deployment fails
+
+**Cause**: Build or configuration error
 2. Verify `playwright install` ran successfully
 3. Increase function timeout (Pro plan required)
 4. Check error logs in Vercel Function Logs
